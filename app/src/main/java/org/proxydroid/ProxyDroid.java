@@ -48,6 +48,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.net.ConnectivityManager;
@@ -78,6 +79,8 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -173,7 +176,7 @@ public class ProxyDroid extends PreferenceActivity
         }
 
         new AlertDialog.Builder(this).setTitle(
-                String.format(getString(R.string.about_title), versionName))
+                        String.format(getString(R.string.about_title), versionName))
                 .setCancelable(false)
                 .setNegativeButton(getString(R.string.ok_iknow), new DialogInterface.OnClickListener() {
                     @Override
@@ -253,6 +256,16 @@ public class ProxyDroid extends PreferenceActivity
 
     private void loadNetworkList() {
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         List<WifiConfiguration> wcs = wm.getConfiguredNetworks();
         String[] ssidEntries = null;
         String[] pureSsid = null;
@@ -328,14 +341,11 @@ public class ProxyDroid extends PreferenceActivity
         LinearLayout layout = getLayout(parent);
 
         // disable adds
-        if (layout != null) {
-            // Add the adView to it
-            layout.addView(adView, 0);
-            adView.loadAd(new AdRequest.Builder()
-                    .addTestDevice("F58907F28184A828DD0DB6F8E38189C6")
-                    .addTestDevice("236666026C17FEFB1B547C4A3B2322CD")
-                    .build());
-        }
+//        if (layout != null) {
+//            // Add the adView to it
+//            layout.addView(adView, 0);
+//            adView.loadAd(new AdRequest.Builder().addTestDevice("F58907F28184A828DD0DB6F8E38189C6").addTestDevice("236666026C17FEFB1B547C4A3B2322CD").build());
+//        }
 
         hostText = (EditTextPreference) findPreference("host");
         portText = (EditTextPreference) findPreference("port");
